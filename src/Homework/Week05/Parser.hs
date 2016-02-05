@@ -1,7 +1,15 @@
 -- Applicative parser for infix arithmetic expressions without any
 -- dependency on hackage. Builds an explicit representation of the
 -- syntax tree to fold over using client-supplied semantics.
-module Homework.Week05.Parser (parseExp) where
+module Homework.Week05.Parser (
+  parseExp, -- Use for #2
+  evalParser,
+  Parser,
+  num,
+  eatSpace,
+  char,
+  eof
+) where
 import Control.Applicative hiding (Const)
 import Control.Arrow
 import Data.Char

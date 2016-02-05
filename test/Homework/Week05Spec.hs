@@ -7,6 +7,7 @@ import Test.Hspec
 import Test.QuickCheck
 
 import Homework.Week05.Assignment
+import qualified Homework.Week05.StackVM as VM
 
 main :: IO ()
 main = hspec spec
@@ -94,3 +95,13 @@ spec = do
 
     it "evaluates arithmetic expressions to integers mod 7" $ do
       mul (add (lit 2) (lit 3)) (lit 4) `shouldBe` Mod7 6
+
+  describe "Stack VM" $ do
+    it "push a number" $ do
+      property $ \x -> (compile $ show x) `shouldBe` (Just [VM.PushI x])
+    
+    it "push a boolean: true" $ do
+      (compile "t") `shouldBe` (Just [VM.PushB T])
+    
+    it "push a boolean: false" $ do
+      (compile "t") `shouldBe` (Just [VM.PushB T])

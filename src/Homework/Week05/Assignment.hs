@@ -1,3 +1,5 @@
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
 module Homework.Week05.Assignment (
   eval,
   evalStr,
@@ -5,11 +7,14 @@ module Homework.Week05.Assignment (
   -- uncomment these once you've defined them:
   Expr(..),
   MinMax(..),
-  Mod7(..)
+  Mod7(..),
+  compile
 ) where
 
+import Control.Applicative
 import Homework.Week05.ExprT
 import Homework.Week05.Parser
+import qualified Homework.Week05.StackVM as VM
 
 -- #1
 eval :: ExprT -> Integer
@@ -62,3 +67,27 @@ instance Expr Mod7 where
 
 mod7 :: Integer -> Integer
 mod7 = flip mod 7
+
+-- #5
+instance Expr VM.Program where
+  lit x = [VM.PushI x]
+  add a b = VM.Add : a ++ b
+  mul a b = VM.Mul : a ++ b
+
+compile :: String -> Maybe VM.Program
+compile = evalParser compiler
+
+compiler :: Parser [VM.StackExp]
+compiler = pushI <|> pushB
+
+pushI :: Parser [VM.StackExp]
+pushI = (\n -> [VM.PushI n]) <$> num
+
+pushB :: Parser [VM.StackExp]
+pushB =
+  (pure [VM.PushB False] <* string "False") <|>
+  (pure [VM.PushB True] <* string "True")
+
+string :: String -> Parser String
+string [] = pure []
+string (x:xs) = liftA2 (:) (char x) (string xs)
