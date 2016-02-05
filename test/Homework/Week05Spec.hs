@@ -100,8 +100,5 @@ spec = do
     it "push a number" $ do
       property $ \x -> (compile $ show x) `shouldBe` (Just [VM.PushI x])
     
-    it "push a boolean: true" $ do
-      (compile "t") `shouldBe` (Just [VM.PushB T])
-    
-    it "push a boolean: false" $ do
-      (compile "t") `shouldBe` (Just [VM.PushB T])
+    it "push a boolean" $ do
+      property $ \x -> (compile $ show x) `shouldBe` (Just [VM.PushB x])
